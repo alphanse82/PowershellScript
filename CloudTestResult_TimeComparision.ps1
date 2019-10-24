@@ -6,6 +6,7 @@ $sessionIdForParallelExecution = "7332bf6c-3974-b9fa-59a8-ed5b9954de09"
 $sessionIdForBaseExecution = "ad5cf73f-38f2-a9ed-ab5d-bece8d62d576"
 $ResultFilter = "All" # All Passed Failed
 $ResultPath = "P:\POC\result"
+$debug = $false
 
 
 #####################################################################################################
@@ -15,32 +16,35 @@ $ResultPath = "P:\POC\result"
 function fetchCloutTestResult
 {
     param (
-        [string] $sessionId
+        [Parameter(Mandatory=$true)]
+        [string] $sessionId,
+        [Parameter(Mandatory=$true)]
+        [bool] $debug = 0,
+        [Parameter(Mandatory=$true)]
+        [bool] $tenant = "CosmosDB3"
     )
     
-    $debug = $false
-
-    $baseUrl = "https://cloudtest/api/tenants/CosmosDB3/sessions"
+    $baseUrl = "https://cloudtest/api/tenants/{0}/sessions".Replace("{0}",$tenant)
 
     $sessionUrl = "$baseUrl/{0}/jobs".Replace("{0}", $sessionId)
     $testJobDetailsURL = "$baseUrl/{0}/jobs/{1}/executions/{2}/cases"
     
 
     if($debug -eq $true) {
-        Write-Host  "CloudBuild Session URL ->  $sessionUrl"
+        Write-Host  "CloudTest Session URL ->  $sessionUrl"
     }
 
     $response = Invoke-WebRequest -Uri $sessionUrl
     $jsonTestJobs = ConvertFrom-Json $([String]::new($response.Content))
 
     if($debug -eq $true) {
-        Write-Host "Total Job Counts areee $($jsonTestJobs.Count)"
+        Write-Host "Job Counts are $($jsonTestJobs.Count)"
         $jsonTestJobs | ConvertTo-Json | Out-File "P:\POC\result\$sessionId-1.log" -Force
     }
 
     $testCaseExecutionLog = @();
 
-    Write-Host " Counts areeee $($jsonTestJobs.Count)"
+    Write-Host "Counts are $($jsonTestJobs.Count)"
     foreach ($jasonTestJob in $jsonTestJobs) 
     {
         $newUrl = $testJobDetailsURL.Replace("{0}","$sessionId").Replace("{1}","$($jasonTestJob.JobId)").Replace("{2}","$($jasonTestJob.ExecutionId)");
@@ -113,21 +117,5 @@ foreach($testjob in $uniqueTestJob) {
     $testCasesexeSummaryClasswise += $testCasesescw
 }
 
-
 $testCasesexeSummaryClasswise | ConvertTo-Json | Out-File "P:\POC\result\Compare.log" -Force
 $testCasesexeSummaryClasswise | Export-Csv -Path "P:\POC\result\Compare.csv" -NoTypeInformation
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
