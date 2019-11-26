@@ -19,6 +19,9 @@ Get-ChildItem C:\\downloadFiles -Filter *.zip | Expand-Archive -DestinationPath 
 
 C:\downloadFiles\ServiceFabric.XCopyPackage.6.6.73-internal\lib\ServiceFabric.XCopyPackage\InstallFabric.ps1 C:\downloadFiles\ServiceFabric.XCopyPackage.6.6.73-internal\lib\ServiceFabric.XCopyPackage\MicrosoftServiceFabric.Internal.6.6.73.0505.cab -AcceptEULA
 
-#net localgroup ServiceFabricAdministrators /add cloudtest
+$Password = ConvertTo-SecureString "Azure@ib@2019!" -AsPlainText -Force
+New-LocalUser -Name "CloudTest" -Password $Password -FullName " CloudTest" -Description "Account for testing CloudTest"
+
+net localgroup ServiceFabricAdministrators /add cloudtest
 
  
