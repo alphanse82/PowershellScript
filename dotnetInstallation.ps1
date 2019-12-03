@@ -1,11 +1,13 @@
 Set-ExecutionPolicy Unrestricted -Force
 
 # installing Azure powershell
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-Install-Module -Name Az -AllowClobber -Scope CurrentUser
+
+# moving these steps to inline powershell
+#Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+#Install-Module -Name Az -AllowClobber -Scope CurrentUser
+#mkdir C:\\downloadFiles
 
 mkdir C:\\Program Files\\Microsoft\\dotnet
-mkdir C:\\downloadFiles
 
 $sourceNugetExe = "https://dotnetwebsite.azurewebsites.net/download/dotnet-core/scripts/v1/dotnet-install.ps1"
 $targetNugetExe = "C:\\downloadFiles\\dotnet-install.ps1"
