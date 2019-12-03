@@ -1,6 +1,8 @@
 Set-ExecutionPolicy Unrestricted -Force
 
-[System.Environment]::SetEnvironmentVariable('MULTI_LEVEL_LOOKUP', '0')
+# installing Azure powershell
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
 
 mkdir C:\\Program Files\\Microsoft\\dotnet
 mkdir C:\\downloadFiles
@@ -12,6 +14,8 @@ C:\\downloadFiles\\dotnet-install.ps1 -InstallDir "C:\\Program Files\\Microsoft\
 
 Invoke-WebRequest https://azcopyvnext.azureedge.net/release20190517/azcopy_windows_amd64_10.1.2.zip -OutFile C:\\downloadFiles\\azcopyv10.zip
 Get-ChildItem C:\\downloadFiles -Filter *.zip | Expand-Archive -DestinationPath C:\\downloadFiles -Force
+
+
 
 $sfpath = (Get-AzKeyVaultSecret -vaultName "ctimagekey" -name "SEBlob").SecretValueText
 .\azcopy_windows_amd64_10.1.2\azcopy.exe copy $sfpath C:\\downloadFiles\\sf.zip
