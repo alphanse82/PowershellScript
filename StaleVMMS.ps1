@@ -9,11 +9,12 @@ function GetVMSSDetailsForResourceGroup {
     $instanceIds =  Get-AzVmss -ResourceGroupName $resourceGroupName | Select-Object Name
 
     $VMInstance = @()
-    foreach ( $instance in $instanceIds ) {
-        $detail = Get-AzVmss -ResourceGroupName $resourceGroupName -VMScaleSetName $instance.Name | Select-Object @{Label = "ImageVersion"; Expression = {$_.VirtualMachineProfile.StorageProfile.ImageReference.Id}}, @{Label = "Name"; Expression = {$instance}}
+    foreach ( $instance in  $instanceIds) { 
+        $detail = Get-AzVmss -ResourceGroupName $resourceGroupName -VMScaleSetName $instance.Name | Select-Object @{Label = "ImageVersion"; Expression = {$_.VirtualMachineProfile.StorageProfile.ImageReference.Id}}, @{Label = "Capacity"; Expression = {$_.Sku.Capacity}}
         $detail = New-Object -TypeName PSObject -Property ([Ordered]@{
             "SubscriptionId"  = $subscriptionId;
             "VMSSName"  = $instance.Name;
+             "Capacity" = $detail.Capacity;
             "IsCurrent"  = IsCurrent -imageVersion $detail.ImageVersion -version $currentVersion;
             "IsPrevious" = IsCurrent -imageVersion $detail.ImageVersion -version '0.0303.2020';
             })
